@@ -66,7 +66,7 @@ export class App extends Component {
         console.log(this.state.videoId)
         player.stopVideo()
         player.loadVideoById(this.state.videoId).then(() => {
-          player.playVideo()
+          player.stopVideo()
         })
       })
   }
