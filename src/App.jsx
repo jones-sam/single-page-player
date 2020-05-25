@@ -14,7 +14,6 @@ import PauseIcon from "@material-ui/icons/Pause"
 import SearchIcon from "@material-ui/icons/Search"
 
 const apiKey = process.env.REACT_APP_GOOGLE_API
-console.log(apiKey)
 
 let player
 export class App extends Component {
@@ -50,20 +49,25 @@ export class App extends Component {
 
   handleSubmit = (event) => {
     event.preventDefault()
-    console.log(`submitted ${this.state.searchQuery}`)
+
     axios
       .get(
         `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${this.state.searchQuery}&key=${apiKey}&maxResults=1&type=video`
       )
       .then((res) => {
-        console.log(res.data)
-        this.setState({
-          videoId: res.data.items[0].id.videoId,
-          videoTitle: res.data.items[0].snippet.title,
-          videoDesc: res.data.items[0].snippet.description,
-          videoCreator: res.data.items[0].snippet.channelTitle,
-        })
-        console.log(this.state.videoId)
+        if (res.data.items.length !== 0) {
+          this.setState({
+            videoId: res.data.items[0].id.videoId,
+            videoTitle: res.data.items[0].snippet.title,
+            videoDesc: res.data.items[0].snippet.description,
+            videoCreator: res.data.items[0].snippet.channelTitle,
+          })
+        } else {
+          this.setState({
+            videoTitle: `No Video Found for "${this.state.searchQuery}"`,
+          })
+        }
+
         player.stopVideo()
         player.loadVideoById(this.state.videoId).then(() => {
           player.stopVideo()
